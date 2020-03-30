@@ -1,17 +1,28 @@
 import cv2
 import numpy as np
 from pygame import mixer
+
 #INITIALIZATION
 mixer.init()
-color1 = [17, 15, 100]
-color2 = [80, 76, 220]
+
+#Played or Not
 snareBool = 0
 kickBool  = 0
 hihatBool = 0
+
+#Color of stick (HSV)
+color1 = [17, 15, 100]
+color2 = [80, 76, 220]
+
+#Position of drum-kit
+        #Bass drum
 Kup, Kdown, Kright, Kleft = 280, 380, 540, 640
+        #Hi-Hat
 Hup, Hdown, Hright, Hleft = 140, 240, 300, 400
+        #Snare Drum
 Sup, Sdown, Sright, Sleft = 140, 240, 750, 850
 
+#display drumkit
 def ShowImage():
         img = cv2.imread('bass.jfif')
         img_height, img_width = 100, 100
@@ -33,7 +44,7 @@ def Contours(image):
 	cnts = cv2.findContours(thresholded.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 	return len(cnts)
 
-    
+#Play Drum-kit    
 def playKick():
 	mixer.music.load('kick.mp3')
 	mixer.music.play()
@@ -46,8 +57,10 @@ def playSnare():
 	mixer.music.load('snare.mp3')
 	mixer.music.play()
 
-	
+#Main Funtion	
 if __name__ == "__main__":
+        #input
+        #Camera initialization
 	cam = cv2.VideoCapture(0)
 	cam.set(3, 1280)
 	cam.set(4, 720)
@@ -60,7 +73,7 @@ if __name__ == "__main__":
 		clone = cv2.flip(clone, 1)
 		clone = cv2.resize(clone, (1280,720))
 
-		# get the three drum regions
+		# drum regions
 		reg_kick  = clone[Kup:Kdown, Kright:Kleft]
 		reg_hihat = clone[Hup:Hdown, Hright:Hleft]
 		reg_snare = clone[Sup:Sdown, Sright:Sleft]
@@ -69,7 +82,7 @@ if __name__ == "__main__":
 		reg_kick  = cv2.GaussianBlur(reg_kick,  (7, 7), 0)
 		reg_hihat = cv2.GaussianBlur(reg_hihat, (7, 7), 0)
 		reg_snare = cv2.GaussianBlur(reg_snare, (7, 7), 0)
-
+                
 		c1 = np.array(color1, dtype="uint8")
 		c2 = np.array(color2, dtype="uint8")
 
